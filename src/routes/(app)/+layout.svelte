@@ -68,7 +68,6 @@
   /* Ensure the body takes up the full viewport height */
   :global(body) {
     margin: 0;
-    background-color: #121212;
     color: #fff;
     display: flex;
     flex-direction: column;
