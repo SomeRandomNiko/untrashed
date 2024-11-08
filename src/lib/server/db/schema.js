@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, geometry, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const trashCategory = pgEnum("category", [
   "organic",
@@ -31,19 +31,46 @@ export const sessions = pgTable("sessions", {
 
 export const trashBin = pgTable("trash_bins", {
   id: integer().generatedAlwaysAsIdentity().primaryKey(),
+  point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
 });
 
-export const trashRecord = pgTable("trash_records", {
+export const trash = pgTable("trash_records", {
   id: integer().generatedAlwaysAsIdentity().primaryKey(),
+  point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
+  image: text().notNull(),
   name: text().notNull(),
   description: text().notNull(),
   category: trashCategory().notNull(),
   impact: trashImpact().notNull(),
   size: trashSize().notNull(),
-  points: integer().notNull(),
+  score: integer().notNull(),
   foundBy: text()
     .notNull()
     .references(() => users.id),
-  disposed: boolean().default(sql`false`),
+  disposed: boolean()
+    .default(sql`false`)
+    .notNull(),
   trashBin: integer().references(() => trashBin.id),
+});
+
+export const usersFoundTrash = pgTable("users_found_trash", {
+  userId: text()
+    .references(() => users.id)
+    .notNull(),
+  trashId: integer()
+    .references(() => trash.id)
+    .notNull(),
+});
+
+export const usersDisposedTrash = pgTable("users_disposed_trash", {
+  binId: integer()
+    .references(() => trashBin.id)
+    .notNull(),
+  userId: text()
+    .references(() => users.id)
+    .notNull(),
+  trashId: integer()
+    .references(() => trash.id)
+    .notNull(),
+  image: text().notNull(),
 });
