@@ -1,0 +1,16 @@
+cache_size_mb: 0
+
+postgres:
+  connection_string: postgres://root:mysecretpassword@db/local
+  default_srid: 4326
+  auto_publish: true
+  tables:
+    locations:
+      schema: public
+      table: locations
+      srid: 4326
+      geometry_column: point
+      geometry_type: POINT
+      properties:
+        id: int4
+  functions: {}
