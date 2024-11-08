@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { boolean, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const trashCategory = pgEnum("category", [
@@ -43,8 +44,6 @@ export const trashRecord = pgTable("trash_records", {
   foundBy: text()
     .notNull()
     .references(() => users.id),
-  disposed: boolean()
-    .notNull()
-    .default(sql`false`),
+  disposed: boolean().default(sql`false`),
   trashBin: integer().references(() => trashBin.id),
 });
