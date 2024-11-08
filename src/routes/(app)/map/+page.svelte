@@ -3,6 +3,8 @@
   import * as maplibregl from "maplibre-gl";
   import "maplibre-gl/dist/maplibre-gl.css";
 
+  const { data } = $props();
+
   let mapDiv;
   $effect(() => {
     const map = new maplibregl.Map({
@@ -17,11 +19,9 @@
         id: "points",
         type: "heatmap",
         source: {
-          type: "vector",
-          url: "http://localhost:3000/locations",
+          type: "geojson",
+          data: data.trashSpots,
         },
-        "source-layer": "locations",
-
         paint: {
           // Increase the heatmap weight based on frequency and property magnitude
           "heatmap-weight": ["interpolate", ["linear"], ["get", "mag"], 0, 0, 6, 1],
