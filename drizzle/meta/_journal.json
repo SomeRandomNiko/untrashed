@@ -15,6 +15,13 @@
       "when": 1731083038934,
       "tag": "20241108162358_location_test",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1731097468683,
+      "tag": "20241108202428_initial_tables",
+      "breakpoints": true
     }
   ]
 }
