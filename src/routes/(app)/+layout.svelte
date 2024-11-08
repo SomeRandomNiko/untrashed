@@ -71,7 +71,6 @@
   /* Ensure the body takes up the full viewport height */
   :global(body) {
     margin: 0;
-    color: #fff;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
