@@ -1,17 +1,12 @@
 import { OPENAI_API_KEY } from "$env/static/private";
 import OpenAI from "openai";
-import { toFile } from "openai/src/uploads.js";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
 });
 export async function classifyTrash(image) {
-  const fileResult = await openai.files.create({
-    file: await toFile(Buffer.from(image, "base64"), "image"),
-  });
-
   const chatResult = await openai.beta.chat.completions.parse({
-    model: "chatgpt-4o-latest",
+    model: "gpt-4o",
     messages: [
       { role: "system", content: CLASSIFY_TRASH_PROPMT },
       {
@@ -20,7 +15,9 @@ export async function classifyTrash(image) {
           { text: "Classify this image", type: "text" },
           {
             type: "image_url",
-            image_url: `https://api.openai.com/v1/files/${fileResult.id}/content`,
+            image_url: {
+              url: image,
+            },
           },
         ],
       },
