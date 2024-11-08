@@ -8,6 +8,13 @@
       "when": 1730747291671,
       "tag": "20241104190811_lucia",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1731083038934,
+      "tag": "20241108162358_location_test",
+      "breakpoints": true
     }
   ]
 }
