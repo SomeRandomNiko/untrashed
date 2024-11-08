@@ -1,5 +1,4 @@
-import { sql } from "drizzle-orm";
-import { boolean, geometry, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { geometry, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const trashCategory = pgEnum("category", [
   "organic",
@@ -29,12 +28,12 @@ export const sessions = pgTable("sessions", {
   expiresAt: timestamp({ withTimezone: true, mode: "date" }).notNull(),
 });
 
-export const trashBin = pgTable("trash_bins", {
+export const trashBins = pgTable("trash_bins", {
   id: integer().generatedAlwaysAsIdentity().primaryKey(),
   point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
 });
 
-export const trash = pgTable("trash_records", {
+export const trashSpots = pgTable("trash_spots", {
   id: integer().generatedAlwaysAsIdentity().primaryKey(),
   point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
   image: text().notNull(),
@@ -44,33 +43,29 @@ export const trash = pgTable("trash_records", {
   impact: trashImpact().notNull(),
   size: trashSize().notNull(),
   score: integer().notNull(),
-  foundBy: text()
+  userId: text()
     .notNull()
     .references(() => users.id),
-  disposed: boolean()
-    .default(sql`false`)
-    .notNull(),
-  trashBin: integer().references(() => trashBin.id),
 });
 
 export const usersFoundTrash = pgTable("users_found_trash", {
   userId: text()
     .references(() => users.id)
     .notNull(),
-  trashId: integer()
-    .references(() => trash.id)
+  trashSpotId: integer()
+    .references(() => trashSpots.id)
     .notNull(),
 });
 
 export const usersDisposedTrash = pgTable("users_disposed_trash", {
-  binId: integer()
-    .references(() => trashBin.id)
+  trashBinId: integer()
+    .references(() => trashBins.id)
     .notNull(),
   userId: text()
     .references(() => users.id)
     .notNull(),
-  trashId: integer()
-    .references(() => trash.id)
+  trashSpotId: integer()
+    .references(() => trashSpots.id)
     .notNull(),
   image: text().notNull(),
 });
