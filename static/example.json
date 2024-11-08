@@ -1,0 +1,8 @@
+{
+  "name": "mouse",
+  "description": "Dark gray mouse",
+  "category": "electronics",
+  "size": "small",
+  "impact": "medium",
+  "points": "size x3  "
+}
