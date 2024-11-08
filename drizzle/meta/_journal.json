@@ -8,6 +8,13 @@
       "when": 1730747291671,
       "tag": "20241104190811_lucia",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1731097278171,
+      "tag": "20241108202118_initial_tables",
+      "breakpoints": true
     }
   ]
 }
