@@ -31,7 +31,7 @@
 <!-- Bottom Navigation Bar -->
 <div class="bottom-nav h-16 w-full flex-row items-center justify-between bg-secondary">
   <!-- Home Button -->
-  <a href="/" class="nav-item {lastSegment === 'home' ? 'text-gray-200' : 'text-gray-500'}">
+  <a href="/" class="nav-item {lastSegment === 'home' ? 'text-green-800' : 'text-gray-500'}">
     <div><i class="fa-solid fa-home"></i></div>
     <span class="text-xs">Home</span>
   </a>
@@ -39,26 +39,29 @@
   <!-- Records Button -->
   <a
     href="/records"
-    class="nav-item {lastSegment === 'records' ? 'text-gray-200' : 'text-gray-500'}"
+    class="nav-item {lastSegment === 'records' ? 'text-green-800' : 'text-gray-500'}"
   >
     <div><i class="fa-solid fa-trash"></i></div>
     <span class="text-xs">Records</span>
   </a>
 
   <!-- Add Button (Centered and highlighted) -->
-  <a href={`/catch`} class="nav-item {lastSegment === 'catch' ? 'text-gray-200' : 'text-gray-500'}">
+  <a
+    href={`/catch`}
+    class="nav-item {lastSegment === 'catch' ? 'text-green-800' : 'text-gray-500'}"
+  >
     <div><i class="fa-solid fa-circle-plus"></i></div>
     <span class="text-xs">Add</span>
   </a>
 
   <!-- Cars Button -->
-  <a href="/map" class="nav-item {lastSegment === 'map' ? 'text-gray-200' : 'text-gray-500'}">
+  <a href="/map" class="nav-item {lastSegment === 'map' ? 'text-green-800' : 'text-gray-500'}">
     <div><i class="fa-solid fa-map"></i></div>
     <span class="text-xs">Map</span>
   </a>
 
   <!-- User Button -->
-  <a href="/user" class="nav-item {lastSegment === 'user' ? 'text-gray-200' : 'text-gray-500'}">
+  <a href="/user" class="nav-item {lastSegment === 'user' ? 'text-green-800' : 'text-gray-500'}">
     <div><i class="fa-solid fa-user"></i></div>
     <span class="text-xs">User</span>
   </a>
