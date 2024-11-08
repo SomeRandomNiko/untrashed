@@ -3,6 +3,7 @@
   import { Button } from "$lib/components/ui/button";
   import { toast } from "svelte-sonner";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import * as Dialog from "$lib/components/ui/dialog/index.js";
 
   let latitude = 0;
   let longitude = 0;
@@ -21,7 +22,13 @@
 
     // Access the user's camera
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({
+        video: {
+          facingMode: {
+            ideal: "environment",
+          },
+        },
+      })
       .then((stream) => {
         videoElement.srcObject = stream;
       })
@@ -63,10 +70,15 @@
         }),
       });
 
-      if (response.ok) {
+      if (response.status === 200) {
         state = "success";
         toast.success("Success", {
           description: "Photo captured successfully",
+        });
+      } else if (response.status === 400) {
+        state = "error";
+        toast.warning("Error", {
+          description: "The photo does not contain any trash",
         });
       } else {
         state = "error";
@@ -104,8 +116,40 @@
   }
 </script>
 
-<div class="flex h-full items-center justify-center">
+<div class="flex h-full flex-col items-center justify-center space-y-8 text-center">
+  <!-- Game Instructions -->
+  <div class="max-w-md">
+    <p class="text-lg text-gray-600">
+      Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
+      forget to verify them in the records page!)
+    </p>
+  </div>
   <Toaster position="top-center" richColors />
+
+  <!-- Info dialog trigger positioned in the top-right corner -->
+  <Dialog.Root>
+    <Dialog.Trigger class="absolute right-4 top-4">
+      <i class="fas fa-info-circle text-xl text-primary"></i>
+    </Dialog.Trigger>
+    <Dialog.Content class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-lg">
+      <Dialog.Header class="mb-4">
+        <Dialog.Title class="mb-2 text-2xl font-bold">Trash Rewards</Dialog.Title>
+        <Dialog.Description class="text-gray-700">
+          <ul class="list-inside list-none">
+            <li>Plastic Trash: 5 points</li>
+            <li>Paper Trash: 10 points</li>
+            <li>Metal Trash: 15 points</li>
+            <li>Glass Trash: 20 points</li>
+            <li>Organic Trash: 25 points</li>
+          </ul>
+        </Dialog.Description>
+      </Dialog.Header>
+      <Dialog.Footer class="mt-4 flex justify-end">
+        <Dialog.Close class="rounded bg-primary px-4 py-2 text-white">Close</Dialog.Close>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+
   {#if state !== "loading"}
     {#if !photoTaken}
       <div class="flex flex-col items-center space-y-4">
@@ -135,6 +179,7 @@
       <p class="text-lg font-medium">Catching...</p>
     </div>
   {/if}
+
   <!-- Hidden canvas element -->
   <canvas bind:this={canvasElement} style="display: none;"></canvas>
 </div>

@@ -23,7 +23,7 @@
   });
 </script>
 
-<div class="flex h-screen flex-col">
+<div class="flex h-dvh flex-col">
   <!-- Main content wrapper with padding to avoid overlap -->
   <div class="flex-grow">
     {@render children()}
@@ -40,7 +40,7 @@
     <!-- Records Button -->
     <a
       href="/records"
-      class="nav-item {lastSegment === 'records' ? 'text-primary' : 'text-gray-500'}"
+      class="nav-item {lastSegment === 'records30' ? 'text-primary' : 'text-gray-500'}"
     >
       <div><i class="fa-solid fa-trash"></i></div>
       <span class="text-xs">Records</span>
