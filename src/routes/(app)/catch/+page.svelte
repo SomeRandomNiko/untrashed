@@ -48,28 +48,44 @@
   /**
    * Handle the "Catch" action
    */
-  function catchPhoto() {
+  async function catchPhoto() {
     state = "loading";
-    setTimeout(() => {
-      // Simulate success or error randomly
-      if (Math.random() < 0.5) {
-        // Success case
+    try {
+      const response = await fetch("/catch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          photoData,
+          latitude,
+          longitude,
+        }),
+      });
+
+      if (response.ok) {
         state = "success";
         toast.success("Success", {
           description: "Photo captured successfully",
         });
       } else {
-        // Error case
         state = "error";
         toast.error("Error", {
           description: "There was an error capturing the photo",
         });
       }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+      state = "error";
+      toast.error("Error", {
+        description: "Failed to reach the server",
+      });
+    } finally {
       setTimeout(() => {
         state = "none";
         retake();
       }, 2000);
-    }, 2000);
+    }
   }
 
   /**
@@ -88,7 +104,7 @@
   }
 </script>
 
-<div class="flex h-full items-center justify-center bg-gray-100">
+<div class="flex h-full items-center justify-center">
   <Toaster position="top-center" richColors />
   {#if state !== "loading"}
     {#if !photoTaken}
@@ -99,16 +115,18 @@
           playsinline
           class="w-full max-w-md rounded-lg shadow-lg"
         ></video>
-        <Button onclick={takePhoto}>Capture</Button>
+        <Button onclick={takePhoto} class="h-24 w-24 rounded-full text-lg">Capture</Button>
       </div>
     {/if}
     {#if photoTaken}
       <div class="flex flex-col items-center space-y-4">
         <img src={photoData} alt="Captured Photo" class="w-full max-w-md rounded-lg shadow-lg" />
-        <div class="flex space-x-4">
-          <Button onclick={catchPhoto}>Catch</Button>
-          <Button onclick={retake} variant="outline">Retake</Button>
-        </div>
+        {#if state === "none"}
+          <div class="mt-4 flex flex-col items-center space-y-4">
+            <Button onclick={catchPhoto} class="w-20">Catch</Button>
+            <Button onclick={retake} variant="outline" class="w-20">Retake</Button>
+          </div>
+        {/if}
       </div>
     {/if}
   {:else}
@@ -117,10 +135,9 @@
       <p class="text-lg font-medium">Catching...</p>
     </div>
   {/if}
+  <!-- Hidden canvas element -->
+  <canvas bind:this={canvasElement} style="display: none;"></canvas>
 </div>
-
-<!-- Hidden canvas element -->
-<canvas bind:this={canvasElement} style="display: none;"></canvas>
 
 <style>
   video,
