@@ -1,14 +1,33 @@
 // src/routes/api/capture/+server.js
+import { db } from "$lib/server/db/index.js";
+import * as table from "$lib/server/db/schema";
+import { classifyTrash } from "$lib/server/openai.js";
 import { json } from "@sveltejs/kit";
 
-export async function POST({ request }) {
+export async function POST({ request, locals }) {
   try {
     const { photoData, latitude, longitude } = await request.json();
 
-    // Process the photoData, latitude, and longitude as needed
-    // This is where you would add backend logic, such as saving the data to a database or processing the image.
+    const classification = JSON.parse(await classifyTrash(photoData));
 
-    // Simulate a success response (e.g., after saving to the database)
+    if (!classification.isTrash) {
+      return json({ error: "Image is not trash" }, { status: 400 });
+    }
+
+    const { name, description, category, impact, size } = classification.data;
+
+    await db.insert(table.trashSpots).values({
+      point: [longitude, latitude],
+      image: photoData,
+      name,
+      description,
+      category,
+      impact,
+      size,
+      score: 0, // TODO
+      userId: locals.user.id,
+    });
+
     return json({ message: "Photo processed successfully" }, { status: 200 });
   } catch (error) {
     console.error("Error processing request:", error);
