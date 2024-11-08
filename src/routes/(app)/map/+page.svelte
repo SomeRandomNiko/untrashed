@@ -60,5 +60,7 @@
   });
 </script>
 
-<h1>Map Page</h1>
-<div class="h-full" bind:this={mapDiv}></div>
+<div class="flex h-full flex-col">
+  <h1>Map Page</h1>
+  <div class="flex-grow" bind:this={mapDiv}></div>
+</div>
