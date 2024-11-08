@@ -13,9 +13,10 @@
   let photoData = "";
   let photoTaken = false;
   let state = "none";
-  const jsConfetti = new JSConfetti();
+  let jsConfetti;
 
   onMount(() => {
+    jsConfetti = new JSConfetti();
     // Get user's location
     navigator.geolocation.getCurrentPosition((position) => {
       latitude = position.coords.latitude;
