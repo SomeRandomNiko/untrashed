@@ -1,30 +1,37 @@
 <script>
   import * as Accordion from "$lib/components/ui/accordion/index.js";
-  import * as Card from "$lib/components/ui/card/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
+  import * as Card from "$lib/components/ui/card/index.js";
   let { record } = $props();
+  const formatter = Intl.NumberFormat("en-US", {
+    unit: record.distance > 1000 ? "kilometer" : "meter",
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    style: "unit",
+  });
 </script>
 
 <Card.Root>
   <Card.Content>
     <div class="flex items-center justify-between">
-      <Card.Title>{record.data.name}</Card.Title>
-      <p>{record.data.distance}m</p>
-      <Button href="/map?lat={record.lat}&long={record.long}" variant="outline">Map</Button>
+      <Card.Title>{record.name}</Card.Title>
+      <p>{formatter.format(record.distance > 1000 ? record.distance / 1000 : record.distance)}</p>
+      <Button href="/map?lat={record.point[1]}&long={record.point[0]}" variant="outline">Map</Button
+      >
       <Button variant="outline">Resolve</Button>
     </div>
     <Accordion.Root type="single">
       <Accordion.Item value="item-1">
-        <Accordion.Trigger>Description</Accordion.Trigger>
+        <Accordion.Trigger>Show Details</Accordion.Trigger>
         <Accordion.Content>
           <figure class="text-center">
             <img
-              src={record.data.image}
-              alt="Image of a {record.data.name}"
+              src={record.image}
+              alt="Image of a {record.name}"
               class="h-auto w-full rounded-lg"
             />
             <figcaption class="mt-2 text-gray-600">
-              {record.data.description}
+              {record.description}
             </figcaption>
           </figure>
         </Accordion.Content>
