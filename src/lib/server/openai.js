@@ -158,3 +158,106 @@ const CLASSIFY_TRASH_SCHEMA = {
     additionalProperties: false,
   },
 };
+
+export async function confirmTrash(trashSpotImage, trashBinImage) {
+  const chatResult = await openai.beta.chat.completions.parse({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: CONFIRM_TRASH_PROPMT },
+      {
+        role: "user",
+        content: [
+          { text: "Classify these images", type: "text" },
+          {
+            type: "image_url",
+            image_url: {
+              url: trashSpotImage,
+            },
+            text: "Image 1",
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: trashBinImage,
+            },
+            text: "Image 2",
+          },
+        ],
+      },
+    ],
+    response_format: {
+      type: "json_schema",
+      json_schema: CONFIRM_TRASH_SCHEMA,
+    },
+  });
+
+  return chatResult.choices[0].message.content;
+}
+
+const CONFIRM_TRASH_PROPMT = `
+Verify that the second provided image (point of view) matches the first provided image (trash), and output the analysis in JSON format.
+
+# Steps
+1. **Examine Images**
+   - You will be provided two images:
+     - **Image 1**: A standalone trash item.
+     - **Image 2**: The same trash item being held in front of a trash bin.
+   
+2. **Verification Requirements**: 
+   - Check **Image 2** for the presence of:
+     - A **trash bin**.
+     - A **trash item**.
+   - Verify if the trash item in **Image 2** is **the same** item that is in **Image 1**.
+
+# Output Format
+
+Provide the output in JSON format conforming to the schema below:
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "containsTrashbin": {
+      "type": "boolean",
+      "description": "Indicates if a trash bin is visible in the second image."
+    },
+    "containsTrash": {
+      "type": "boolean",
+      "description": "Indicates if there is trash in the second image."
+    },
+    "isSameTrash": {
+      "type": "boolean",
+      "description": "Indicates if the trash item from the first image matches the one in the second."
+    }
+  },
+  "required": ["containsTrashbin", "containsTrash", "isSameTrash"]
+}
+
+# Notes
+- Only provide the JSON output as specified. No additional response or commentary outside of the schema given.
+- Ensure careful analysis to verify that the trash item in both images is the exact match.
+- The focus is on matching **both images** and verifying the defined elements in **Image 2**.
+- Any conclusion drawn must be based on a thorough analysis of both images. Include verification of all expected components for accuracy.
+`;
+
+const CONFIRM_TRASH_SCHEMA = {
+  name: "classify_trash",
+  strict: true,
+  schema: {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    type: "object",
+    properties: {
+      containsTrashbin: {
+        type: "boolean",
+      },
+      containsTrash: {
+        type: "boolean",
+      },
+      isSameTrash: {
+        type: "boolean",
+      },
+    },
+    additionalProperties: false,
+    required: ["containsTrashbin", "containsTrash", "isSameTrash"],
+  },
+};
