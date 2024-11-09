@@ -39,7 +39,7 @@
 
     <!-- Records Button -->
     <a
-      href="/records"
+      href="/records?lat={latitude}&long={longitude}"
       class="nav-item {lastSegment === 'records30' ? 'text-primary' : 'text-gray-500'}"
     >
       <div><i class="fa-solid fa-trash"></i></div>
