@@ -32,7 +32,10 @@
   <!-- Bottom Navigation Bar -->
   <div class="bottom-nav h-16 w-full flex-row items-center justify-between bg-secondary">
     <!-- Home Button -->
-    <a href="/" class="nav-item {lastSegment === 'home' ? 'text-primary' : 'text-gray-500'}">
+    <a
+      href="/home?lat={latitude}&long={longitude}"
+      class="nav-item {lastSegment === 'home' ? 'text-primary' : 'text-gray-500'}"
+    >
       <div><i class="fa-solid fa-home"></i></div>
       <span class="text-xs">Home</span>
     </a>
