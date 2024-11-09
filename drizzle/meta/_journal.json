@@ -36,6 +36,20 @@
       "when": 1731111925077,
       "tag": "20241109002525_remove_users_found_trash_table",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1731136817625,
+      "tag": "20241109072017_add_score_to_user_dispose_trash",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1731137122973,
+      "tag": "20241109072522_add_comp_primary_key",
+      "breakpoints": true
     }
   ]
 }
