@@ -1,4 +1,5 @@
 <script>
+  import { page } from "$app/stores";
   import { PUBLIC_MAPTILER_API_KEY } from "$env/static/public";
   import * as maplibregl from "maplibre-gl";
   import "maplibre-gl/dist/maplibre-gl.css";
@@ -7,10 +8,16 @@
 
   let mapDiv;
   $effect(() => {
+    const center = $page.url.searchParams.has("lat") &&
+      $page.url.searchParams.has("long") && [
+        +$page.url.searchParams.get("long"),
+        +$page.url.searchParams.get("lat"),
+      ];
+
     const map = new maplibregl.Map({
       container: mapDiv,
-      center: [11, 46],
-      zoom: 10,
+      center: center || [11.4, 46.6],
+      zoom: center ? 12 : 7,
       style: `https://api.maptiler.com/maps/basic-v2/style.json?key=${PUBLIC_MAPTILER_API_KEY}`,
     });
 
