@@ -173,14 +173,12 @@ export async function confirmTrash(trashSpotImage, trashBinImage) {
             image_url: {
               url: trashSpotImage,
             },
-            text: "Image 1",
           },
           {
             type: "image_url",
             image_url: {
               url: trashBinImage,
             },
-            text: "Image 2",
           },
         ],
       },
