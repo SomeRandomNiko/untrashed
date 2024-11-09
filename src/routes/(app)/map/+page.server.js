@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db";
 import * as table from "$lib/server/db/schema";
-import { notInArray } from "drizzle-orm";
+import { notInArray, sql } from "drizzle-orm";
 export async function load() {
   const trashSpots = await db
     .select()
@@ -31,7 +31,27 @@ export async function load() {
     features,
   };
 
+  const events = await db.execute(
+    sql`
+      SELECT
+        ST_AsGeoJSON(ST_Buffer(ST_MakePoint(11.16, 46.67)::geography, 2000))::jsonb as geometry,
+        'Make Merano clean again' as name,
+        'The situation of the city center is getting worse. The waste is increasing and the trash is not being collected. We need to take action to clean the city.' as description
+      `,
+  );
+
   return {
     trashSpots: featureCollection,
+    events: {
+      type: "FeatureCollection",
+      features: events.map((e) => ({
+        type: "Feature",
+        geometry: e.geometry,
+        properties: {
+          name: e.name,
+          description: e.description,
+        },
+      })),
+    },
   };
 }
