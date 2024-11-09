@@ -45,6 +45,14 @@
       });
   });
 
+  let searchParams = $derived.by(() => {
+    const searchParams = new URLSearchParams();
+    if ($currentLocation) {
+      searchParams.set("location", $currentLocation.join(","));
+    }
+    return searchParams;
+  });
+
   /**
    * Take a photo
    */
@@ -134,13 +142,18 @@
           });
         }
       }
+
+      setTimeout(() => {
+        appState = "none";
+        window.location.href = "/records?" + searchParams.toString();
+      }, 2000);
     } catch (error) {
       console.error("Error during fetch:", error);
       appState = "error";
       toast.error("Error", {
         description: "Failed to reach the server",
       });
-    } finally {
+
       setTimeout(() => {
         appState = "none";
         retake();
