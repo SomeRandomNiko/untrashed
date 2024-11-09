@@ -3,12 +3,11 @@
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import { currentLocation } from "$lib/currentLocation";
   import JSConfetti from "js-confetti";
   import { onMount } from "svelte";
   import { toast } from "svelte-sonner";
 
-  let latitude = 0;
-  let longitude = 0;
   let videoElement;
   let canvasElement;
   let photoData = $state("");
@@ -22,11 +21,6 @@
       captureRecord = +$page.url.searchParams.get("record");
     }
     jsConfetti = new JSConfetti();
-    // Get user's location
-    navigator.geolocation.getCurrentPosition((position) => {
-      latitude = position.coords.latitude;
-      longitude = position.coords.longitude;
-    });
 
     // Access the user's camera
     navigator.mediaDevices
@@ -75,6 +69,8 @@
           body: JSON.stringify({
             photoData,
             captureRecord,
+            latitude: $currentLocation[1],
+            longitude: $currentLocation[0],
           }),
         });
 
