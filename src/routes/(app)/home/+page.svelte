@@ -3,7 +3,6 @@
   import * as Table from "$lib/components/ui/table/index.js";
 
   let { data } = $props();
-  console.log(data.scores);
 </script>
 
 <div class="mt-6 flex flex-col items-center space-y-8">
