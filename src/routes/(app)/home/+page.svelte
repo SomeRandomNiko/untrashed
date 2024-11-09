@@ -6,7 +6,8 @@
 </script>
 
 <div class="mt-6 flex flex-col items-center space-y-8">
-  <h1 class="text-2xl font-semibold tracking-tight">Hey, {data.username}!</h1>
+  <h1 class="text-2xl font-semibold tracking-tight">Hey, {data.user.name}!</h1>
+  <h5 class="text-xl font-semibold tracking-tight">Your total points: {data.user.score}</h5>
   <Card.Root class="w-5/6">
     <Card.Header>
       <Card.Title>Global Highscore</Card.Title>

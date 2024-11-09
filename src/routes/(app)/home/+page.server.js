@@ -3,6 +3,8 @@ import * as table from "$lib/server/db/schema";
 import { eq, sql, sum } from "drizzle-orm";
 
 export async function load({ locals }) {
+  const username = locals.user.username;
+  let score = 0;
   const trashs = db
     .select({
       uid: table.trashSpots.userId,
@@ -19,10 +21,11 @@ export async function load({ locals }) {
 
   scoresWithUsername.forEach((item) => {
     if (item.score === null) item.score = 0;
+    if (item.uname === locals.user.username) score = item.score;
   });
 
   return {
-    username: locals.user.username,
+    user: { name: username, score: score },
     scores: scoresWithUsername,
   };
 }
