@@ -26,7 +26,7 @@
       <Card.Title>{record.name}</Card.Title>
       <p>{formatter.format(record.distance > 1000 ? record.distance / 1000 : record.distance)}</p>
       <Button href="/map?{searchParams}" variant="outline">Map</Button>
-      <Button variant="outline">Resolve</Button>
+      <Button href="/catch?record={record.id}" variant="outline">Resolve</Button>
     </div>
     <Accordion.Root type="single">
       <Accordion.Item value="item-1">
