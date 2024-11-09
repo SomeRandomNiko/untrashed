@@ -204,14 +204,6 @@
 </script>
 
 <div class="relative flex h-full flex-col items-center justify-center pt-6 text-center">
-  <!-- Game Instructions -->
-  <div class="max-w-md">
-    {#if captureRecord}
-      <h1 class="text-3xl font-bold">Confirm the Trash</h1>
-    {:else}
-      <h1 class="text-3xl font-bold">Catch the Trash</h1>
-    {/if}
-  </div>
   <Toaster position="top-center" richColors />
 
   <!-- Info dialog trigger positioned in the top-right corner -->
@@ -294,6 +286,13 @@
   </Dialog.Root>
 
   {#if appState !== "loading"}
+    <div class="max-w-md">
+      {#if captureRecord}
+        <h1 class="text-3xl font-bold">Confirm the Trash</h1>
+      {:else}
+        <h1 class="text-3xl font-bold">Catch the Trash</h1>
+      {/if}
+    </div>
     <!-- Game Instructions -->
     <div class="max-w-md">
       <p class="text-md text-gray-600">
@@ -316,15 +315,15 @@
       <div class="flex flex-col items-center gap-4">
         <img src={photoData} alt="Captured Photo" class="w-full max-w-md rounded-lg shadow-lg" />
         {#if appState === "none"}
-          <div class="flex flex-col items-center gap-4 pt-4">
-            <Button onclick={catchPhoto} class="w-20">{captureRecord ? "Confirm" : "Catch"}</Button>
-            <Button onclick={retake} variant="outline" class="w-20">Retake</Button>
+          <div class="flex flex-row items-center gap-2">
+            <Button onclick={retake} variant="outline" class="w-30">Retake</Button>
+            <Button onclick={catchPhoto} class="w-30">{captureRecord ? "Confirm" : "Catch"}</Button>
           </div>
         {/if}
       </div>
     {/if}
   {:else}
-    <div class="flex flex-col items-center space-y-4">
+    <div class="flex flex-col items-center gap-4">
       <i class="fas fa-trash fa-spin text-6xl text-primary"></i>
       <p class="text-lg font-medium">Catching...</p>
     </div>
