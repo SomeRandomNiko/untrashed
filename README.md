@@ -1,38 +1,27 @@
-# sv
+<h1 align="center">UnTrashed🌍♻️</h1>
+<div align="center">
+    <img src="./static/UnTrashed.svg" height="200">
+</div>
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+UnTrashed is a gamified app making cleanup fun! Users can spot, tag, and dispose of litter, earning points, achieving goals, and contributing to a cleaner world. 🌎✨
 
-## Creating a project
+### Overview 🎯
 
-If you're seeing this, you've probably already done this step. Congrats!
+UnTrashed combines real-world impact with the thrill of a game. Using computer vision, users tag trash, confirm disposal, and score points based on trash type.
 
-```bash
-# create a new project in the current directory
-npx sv create
+### How it Works 🚮➡️📱
 
-# create a new project in my-app
-npx sv create my-app
-```
+- Tagging Trash: See litter? Tag it in the app to mark it for disposal.
+- Resolve & Verify: Dispose the tagged item and snap a pic to confirm it's in a bin.
+- Anti-Scam Detection: Our computer vision tech verifies the match – no shortcuts! 🔍
+- Earn Rewards: Correct matches = points + confetti! 🎉
+- Events & Trashure Hunts 🎈
 
-## Developing
+Join local cleanup events like “Make Merano Clean Again” and earn double points!
+Invite friends and compete in Trashure Hunts for extra rewards.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### More Features 🌟
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+🏆 Leaderboard: Compete for the top spot.
+📊 User Stats: Track your impact with detailed stats.
+Let’s clean up, one tag at a time! 🧹🌱
