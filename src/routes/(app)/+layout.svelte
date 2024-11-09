@@ -36,7 +36,7 @@
 
     return () => {
       navigator.geolocation.clearWatch(watch);
-      currentLocation.set(undefined);
+      currentLocation.set([11.331995522990217, 46.47866974879552]);
     };
   });
 
