@@ -102,36 +102,36 @@
           toast.warning("Error", {
             description: "The photo does not contain any trash",
           });
-        } else {
-          const response = await fetch("/catch", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              photoData,
-              latitude,
-              longitude,
-            }),
-          });
+        }
+      } else {
+        const response = await fetch("/catch", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            photoData,
+            latitude,
+            longitude,
+          }),
+        });
 
-          if (response.status === 200) {
-            appState = "success";
-            jsConfetti.addConfetti();
-            toast.success("Success", {
-              description: "Photo captured successfully",
-            });
-          } else if (response.status === 400) {
-            appState = "error";
-            toast.warning("Error", {
-              description: "The photo does not contain any trash",
-            });
-          } else {
-            appState = "error";
-            toast.error("Error", {
-              description: "There was an error capturing the photo",
-            });
-          }
+        if (response.status === 200) {
+          appState = "success";
+          jsConfetti.addConfetti();
+          toast.success("Success", {
+            description: "Photo captured successfully",
+          });
+        } else if (response.status === 400) {
+          appState = "error";
+          toast.warning("Error", {
+            description: "The photo does not contain any trash",
+          });
+        } else {
+          appState = "error";
+          toast.error("Error", {
+            description: "There was an error capturing the photo",
+          });
         }
       }
     } catch (error) {
