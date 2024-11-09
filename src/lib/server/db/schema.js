@@ -1,5 +1,6 @@
 import {
   geometry,
+  index,
   integer,
   pgEnum,
   pgTable,
@@ -28,35 +29,47 @@ export const users = pgTable("users", {
   passwordHash: text().notNull(),
 });
 
-export const sessions = pgTable("sessions", {
-  id: text().primaryKey(),
-  userId: text()
-    .notNull()
-    .references(() => users.id),
-  expiresAt: timestamp({ withTimezone: true, mode: "date" }).notNull(),
-});
+export const sessions = pgTable(
+  "sessions",
+  {
+    id: text().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => users.id),
+    expiresAt: timestamp({ withTimezone: true, mode: "date" }).notNull(),
+  },
+  (t) => [index().on(t.userId)],
+);
 
-export const trashBins = pgTable("trash_bins", {
-  id: integer().generatedAlwaysAsIdentity().primaryKey(),
-  point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
-  createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
-});
+export const trashBins = pgTable(
+  "trash_bins",
+  {
+    id: integer().generatedAlwaysAsIdentity().primaryKey(),
+    point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
+    createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
+  },
+  (t) => [index().using("gist", t.point)],
+);
 
-export const trashSpots = pgTable("trash_spots", {
-  id: integer().generatedAlwaysAsIdentity().primaryKey(),
-  point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
-  image: text().notNull(),
-  name: text().notNull(),
-  description: text().notNull(),
-  category: trashCategory().notNull(),
-  impact: trashImpact().notNull(),
-  size: trashSize().notNull(),
-  score: integer().notNull(),
-  userId: text()
-    .notNull()
-    .references(() => users.id),
-  createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
-});
+export const trashSpots = pgTable(
+  "trash_spots",
+  {
+    id: integer().generatedAlwaysAsIdentity().primaryKey(),
+    point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
+    image: text().notNull(),
+    name: text().notNull(),
+    description: text().notNull(),
+    category: trashCategory().notNull(),
+    impact: trashImpact().notNull(),
+    size: trashSize().notNull(),
+    score: integer().notNull(),
+    userId: text()
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
+  },
+  (t) => [index().on(t.userId), index().using("gist", t.point)],
+);
 
 export const usersDisposedTrash = pgTable(
   "users_disposed_trash",
@@ -74,5 +87,5 @@ export const usersDisposedTrash = pgTable(
     score: integer().notNull(),
     createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
   },
-  (t) => ({ pk: primaryKey({ columns: [t.userId, t.trashSpotId] }) }),
+  (t) => [primaryKey({ columns: [t.userId, t.trashSpotId] }), index().on(t.trashBinId)],
 );

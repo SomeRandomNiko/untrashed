@@ -57,6 +57,13 @@
       "when": 1731149150758,
       "tag": "20241109104550_added_created_at_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1731159060395,
+      "tag": "20241109133100_indexes",
+      "breakpoints": true
     }
   ]
 }
