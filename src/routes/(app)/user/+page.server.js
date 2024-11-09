@@ -46,13 +46,13 @@ export async function load({ locals }) {
     .from(table.trashSpots)
     .where(eq(table.trashSpots.userId, uid))
     .groupBy(table.trashSpots.userId);
-  const totalPoints = total[0].user_score;
+  const totalPoints = total[0]?.user_score ?? 0;
 
   const foundTrash30 = await db
     .select({ uid: table.trashSpots.userId, createdAt: table.trashSpots.createdAt })
     .from(table.trashSpots)
     .where(and(eq(uid, table.trashSpots.userId), sql`created_at > (now() - interval '30 days')`));
-  const foundTrash30Count = foundTrash.length;
+  const foundTrash30Count = foundTrash30.length;
 
   const disposed30Trash = await db
     .select({ uid: table.usersDisposedTrash.userId, createdAt: table.usersDisposedTrash.createdAt })
@@ -61,7 +61,7 @@ export async function load({ locals }) {
       and(eq(table.usersDisposedTrash.userId, uid), sql`created_at > (now() - interval '30 days')`),
     );
   console.log(disposedTrashCount);
-  const disposedTrash30Count = disposedTrash.length;
+  const disposedTrash30Count = disposed30Trash.length;
 
   const stats = [
     {
