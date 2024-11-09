@@ -36,7 +36,7 @@
 
     return () => {
       navigator.geolocation.clearWatch(watch);
-      currentLocation.set(undefined);
+      currentLocation.set([11.331995522990217, 46.47866974879552]);
     };
   });
 
@@ -51,7 +51,7 @@
 
 <div class="flex h-dvh flex-col">
   <!-- Main content wrapper with padding to avoid overlap -->
-  <div class="flex-grow">
+  <div class="flex-grow overflow-y-auto overflow-x-hidden">
     {@render children()}
   </div>
 

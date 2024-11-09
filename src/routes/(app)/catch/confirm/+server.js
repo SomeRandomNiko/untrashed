@@ -51,15 +51,18 @@ export async function POST({ request, locals }) {
     const { containsTrashbin, containsTrash, isSameTrash } = classification;
 
     if (!containsTrash) {
-      return json({ error: "No trash found" }, { status: 400 });
+      return json({ error: "The picture does not contain any trash" }, { status: 400 });
     }
 
     if (!containsTrashbin) {
-      return json({ error: "No trash bin found" }, { status: 400 });
+      return json({ error: "The picture does not contain a trash bin" }, { status: 400 });
     }
 
     if (!isSameTrash) {
-      return json({ error: "Trash does not match" }, { status: 400 });
+      return json(
+        { error: "The disposed trash does not match the reported trash" },
+        { status: 400 },
+      );
     }
 
     let [trashBin] = await db
