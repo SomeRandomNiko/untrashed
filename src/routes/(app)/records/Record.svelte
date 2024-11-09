@@ -25,8 +25,10 @@
     <div class="flex items-center justify-between">
       <Card.Title>{record.name}</Card.Title>
       <p>{formatter.format(record.distance > 1000 ? record.distance / 1000 : record.distance)}</p>
+    </div>
+    <div class="mt-2 flex items-center justify-end gap-2">
       <Button href="/map?{searchParams}" variant="outline">Map</Button>
-      <Button href="/catch?record={record.id}" variant="outline">Resolve</Button>
+      <Button href="/catch?record={record.id}" class="bg-primary">Dispose</Button>
     </div>
     <Accordion.Root type="single">
       <Accordion.Item value="item-1">
