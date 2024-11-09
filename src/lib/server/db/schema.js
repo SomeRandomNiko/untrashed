@@ -28,11 +28,6 @@ export const sessions = pgTable("sessions", {
   expiresAt: timestamp({ withTimezone: true, mode: "date" }).notNull(),
 });
 
-export const locations = pgTable("locations", ({ integer, geometry }) => ({
-  id: integer().generatedAlwaysAsIdentity().primaryKey(),
-  point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
-}));
-
 export const trashBins = pgTable("trash_bins", {
   id: integer().generatedAlwaysAsIdentity().primaryKey(),
   point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
