@@ -1,8 +1,13 @@
 import { db } from "$lib/server/db";
 import * as table from "$lib/server/db/schema";
+import { userLocation } from "$lib/server/userLocation.js";
 import { and, eq, getTableColumns, notInArray, sql } from "drizzle-orm";
 
-export async function load({ params, locals }) {
+export async function load({ locals, url }) {
+  const lat = url.searchParams.get("lat");
+  const long = url.searchParams.get("long");
+
+  userLocation.set([lat, long]);
   const allTrashSpots = await db
     .select({
       ...getTableColumns(table.trashSpots),

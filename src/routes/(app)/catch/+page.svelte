@@ -4,6 +4,7 @@
   import { toast } from "svelte-sonner";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import JSConfetti from "js-confetti";
 
   let latitude = 0;
   let longitude = 0;
@@ -12,8 +13,10 @@
   let photoData = "";
   let photoTaken = false;
   let state = "none";
+  let jsConfetti;
 
   onMount(() => {
+    jsConfetti = new JSConfetti();
     // Get user's location
     navigator.geolocation.getCurrentPosition((position) => {
       latitude = position.coords.latitude;
@@ -72,6 +75,7 @@
 
       if (response.status === 200) {
         state = "success";
+        jsConfetti.addConfetti();
         toast.success("Success", {
           description: "Photo captured successfully",
         });
@@ -106,7 +110,13 @@
   function retake() {
     photoTaken = false;
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({
+        video: {
+          facingMode: {
+            ideal: "environment",
+          },
+        },
+      })
       .then((stream) => {
         videoElement.srcObject = stream;
       })
