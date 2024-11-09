@@ -39,6 +39,7 @@ export const sessions = pgTable("sessions", {
 export const trashBins = pgTable("trash_bins", {
   id: integer().generatedAlwaysAsIdentity().primaryKey(),
   point: geometry({ type: "point", mode: "tuple", srid: 4326 }).notNull(),
+  createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
 });
 
 export const trashSpots = pgTable("trash_spots", {
@@ -54,6 +55,7 @@ export const trashSpots = pgTable("trash_spots", {
   userId: text()
     .notNull()
     .references(() => users.id),
+  createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
 });
 
 export const usersDisposedTrash = pgTable(
@@ -70,6 +72,7 @@ export const usersDisposedTrash = pgTable(
       .notNull(),
     image: text().notNull(),
     score: integer().notNull(),
+    createdAt: timestamp({ withTimezone: true, mode: "date" }).notNull().defaultNow(),
   },
   (t) => ({ pk: primaryKey({ columns: [t.userId, t.trashSpotId] }) }),
 );
