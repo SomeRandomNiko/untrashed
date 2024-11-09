@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db";
 import * as table from "$lib/server/db/schema";
-import { eq, sql, sum } from "drizzle-orm";
+import { and, eq, sql, sum } from "drizzle-orm";
 
 export async function load({ locals }) {
   const username = locals.user.username;
@@ -49,25 +49,46 @@ export async function load({ locals }) {
   const totalPoints = total[0].user_score;
 
   const foundTrash30 = await db
-    .select({ uid: table.trashSpots.userId })
+    .select({ uid: table.trashSpots.userId, createdAt: table.trashSpots.createdAt })
     .from(table.trashSpots)
-    .where(eq(uid, table.trashSpots.userId));
+    .where(and(eq(uid, table.trashSpots.userId), sql`created_at > (now() - interval '30 days')`));
   const foundTrash30Count = foundTrash.length;
 
   const disposed30Trash = await db
-    .select({ uid: table.usersDisposedTrash.userId })
+    .select({ uid: table.usersDisposedTrash.userId, createdAt: table.usersDisposedTrash.createdAt })
     .from(table.usersDisposedTrash)
-    .where(eq(table.usersDisposedTrash.userId, uid));
+    .where(
+      and(eq(table.usersDisposedTrash.userId, uid), sql`created_at > (now() - interval '30 days')`),
+    );
+  console.log(disposedTrashCount);
   const disposedTrash30Count = disposedTrash.length;
 
-  console.log("Value: ");
-  console.log();
+  const stats = [
+    {
+      message: "Total Points",
+      value: totalPoints,
+    },
+    {
+      message: "Reported Trash",
+      value: foundTrashCount,
+    },
+    {
+      message: "Disposed Trash",
+      value: disposedTrashCount,
+    },
+    {
+      message: "Reported in the last 30 days",
+      value: foundTrash30Count,
+    },
+    {
+      message: "Disposed in the last 30 days",
+      value: disposedTrash30Count,
+    },
+  ];
 
   return {
     user: { name: username, uid: uid, score: score },
     scores: scoresWithUsername,
-    found: foundTrashCount,
-    disposed: disposedTrashCount,
-    score: totalPoints,
+    stats: stats,
   };
 }
