@@ -48,15 +48,6 @@ export const trashSpots = pgTable("trash_spots", {
     .references(() => users.id),
 });
 
-export const usersFoundTrash = pgTable("users_found_trash", {
-  userId: text()
-    .references(() => users.id)
-    .notNull(),
-  trashSpotId: integer()
-    .references(() => trashSpots.id)
-    .notNull(),
-});
-
 export const usersDisposedTrash = pgTable("users_disposed_trash", {
   trashBinId: integer()
     .references(() => trashBins.id)

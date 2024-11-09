@@ -29,6 +29,13 @@
       "when": 1731111403252,
       "tag": "20241109001643_remove_locations_table",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1731111925077,
+      "tag": "20241109002525_remove_users_found_trash_table",
+      "breakpoints": true
     }
   ]
 }
