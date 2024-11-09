@@ -15,7 +15,6 @@ export async function POST({ request, locals }) {
     }
 
     const { name, description, category, impact, size } = classification.data;
-
     await db.insert(table.trashSpots).values({
       point: [longitude, latitude],
       image: photoData,
@@ -24,11 +23,11 @@ export async function POST({ request, locals }) {
       category,
       impact,
       size,
-      score: 0, // TODO
+      score: 5,
       userId: locals.user.id,
     });
 
-    return json({ message: "Photo processed successfully" }, { status: 200 });
+    return json({ message: "Photo processed successfully", score: 5 }, { status: 200 });
   } catch (error) {
     console.error("Error processing request:", error);
     return json({ error: "Failed to process the photo" }, { status: 500 });

@@ -1,4 +1,12 @@
-import { geometry, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  geometry,
+  integer,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const trashCategory = pgEnum("category", [
   "organic",
@@ -48,15 +56,20 @@ export const trashSpots = pgTable("trash_spots", {
     .references(() => users.id),
 });
 
-export const usersDisposedTrash = pgTable("users_disposed_trash", {
-  trashBinId: integer()
-    .references(() => trashBins.id)
-    .notNull(),
-  userId: text()
-    .references(() => users.id)
-    .notNull(),
-  trashSpotId: integer()
-    .references(() => trashSpots.id)
-    .notNull(),
-  image: text().notNull(),
-});
+export const usersDisposedTrash = pgTable(
+  "users_disposed_trash",
+  {
+    trashBinId: integer()
+      .references(() => trashBins.id)
+      .notNull(),
+    userId: text()
+      .references(() => users.id)
+      .notNull(),
+    trashSpotId: integer()
+      .references(() => trashSpots.id)
+      .notNull(),
+    image: text().notNull(),
+    score: integer().notNull(),
+  },
+  (t) => ({ pk: primaryKey({ columns: [t.userId, t.trashSpotId] }) }),
+);

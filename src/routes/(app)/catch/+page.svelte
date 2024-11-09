@@ -19,7 +19,7 @@
 
   let captureRecord = $state();
   // New variables for score display
-  let displayScore = null;
+  let displayScore = $state(null);
   let scoreTimeout;
 
   onMount(() => {
@@ -119,14 +119,25 @@
           },
           body: JSON.stringify({
             photoData,
-            latitude,
-            longitude,
+            latitude: $currentLocation[1],
+            longitude: $currentLocation[0],
           }),
         });
 
+        const result = await response.json();
         if (response.status === 200) {
           appState = "success";
           jsConfetti.addConfetti();
+
+          // Display the score
+          displayScore = result.score;
+
+          // Set a timeout to hide the score after 1 second
+          clearTimeout(scoreTimeout);
+          scoreTimeout = setTimeout(() => {
+            displayScore = null;
+          }, 1000);
+
           toast.success("Success", {
             description: "Photo captured successfully",
           });
@@ -142,7 +153,6 @@
           });
         }
       }
-
       setTimeout(() => {
         appState = "none";
         window.location.href = "/records?" + searchParams.toString();
@@ -153,7 +163,6 @@
       toast.error("Error", {
         description: "Failed to reach the server",
       });
-
       setTimeout(() => {
         appState = "none";
         retake();
@@ -205,14 +214,69 @@
     </Dialog.Trigger>
     <Dialog.Content class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-lg">
       <Dialog.Header class="mb-4">
-        <Dialog.Title class="mb-2 text-2xl font-bold">Trash Rewards</Dialog.Title>
+        <Dialog.Title class="mb-2 text-2xl font-bold">Rewards</Dialog.Title>
         <Dialog.Description class="text-gray-700">
-          <ul class="list-inside list-none">
-            <li>Plastic Trash: 5 points</li>
-            <li>Paper Trash: 10 points</li>
-            <li>Metal Trash: 15 points</li>
-            <li>Glass Trash: 20 points</li>
-            <li>Organic Trash: 25 points</li>
+          <ul>
+            <li>
+              <strong>Category Weighting:</strong> Each trash category has a specific weight,
+              multiplied by 5 to determine its score impact:
+              <ul>
+                <li>Organic: Weight of 1</li>
+                <li>Paper: Weight of 2</li>
+                <li>Glass: Weight of 3</li>
+                <li>Metal: Weight of 4</li>
+                <li>Household: Weight of 5</li>
+                <li>Electronics: Weight of 6</li>
+              </ul>
+            </li>
+            <br />
+            <li>
+              <strong>Impact Weighting:</strong> Reflects the environmental impact level of the
+              trash, multiplied by 10 for the highest influence:
+              <ul>
+                <li>Low Impact: Weight of 1</li>
+                <li>Medium Impact: Weight of 2</li>
+                <li>High Impact: Weight of 3</li>
+              </ul>
+            </li>
+            <br />
+            <li>
+              <strong>Size Weighting:</strong> Reflects the physical size of the trash item,
+              multiplied by 3 for moderate influence on the score:
+              <br />
+              <ul>
+                <li>Small: Weight of 1</li>
+                <li>Medium: Weight of 2</li>
+                <li>Large: Weight of 3</li>
+              </ul>
+            </li>
+            <br />
+            <li>
+              <strong>Score Calculation:</strong>
+              <ul>
+                <li>
+                  The total score is calculated as:
+                  <br /><b
+                    ><code>baseScore = categoryWeight * 5 + impactWeight * 10 + sizeWeight * 3</code
+                    ></b
+                  >
+                </li>
+                <li>
+                  This prioritizes <em>Impact</em> first, then <em>Category</em>, and finally
+                  <em>Size</em>.
+                </li>
+              </ul>
+            </li>
+            <br />
+            <li>
+              <strong>Minimum Score:</strong>
+              <ul>
+                <li>
+                  A fixed score of 5 point is assigned when catching and minimum score of 10 is
+                  applied.
+                </li>
+              </ul>
+            </li>
           </ul>
         </Dialog.Description>
       </Dialog.Header>

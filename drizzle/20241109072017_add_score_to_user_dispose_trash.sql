@@ -1,0 +1,1 @@
+ALTER TABLE "users_disposed_trash" ADD COLUMN "score" integer NOT NULL;

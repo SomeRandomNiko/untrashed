@@ -1,0 +1,1 @@
+ALTER TABLE "users_disposed_trash" ADD CONSTRAINT "users_disposed_trash_user_id_trash_spot_id_pk" PRIMARY KEY("user_id","trash_spot_id");
