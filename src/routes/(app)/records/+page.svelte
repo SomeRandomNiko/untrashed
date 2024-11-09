@@ -13,12 +13,12 @@
       <Tabs.Trigger value="own">Own</Tabs.Trigger>
     </Tabs.List>
     <Tabs.Content value="all" class="space-y-2">
-      {#each data.records as record}
+      {#each data.allTrashSpots as record}
         <Record {record} />
       {/each}
     </Tabs.Content>
     <Tabs.Content value="own" class="space-y-2">
-      {#each data.records as record}
+      {#each data.ownTrashSpots as record}
         <Record {record} />
       {/each}
     </Tabs.Content>
