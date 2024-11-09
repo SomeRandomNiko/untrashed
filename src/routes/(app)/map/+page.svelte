@@ -1,23 +1,26 @@
 <script>
   import { page } from "$app/stores";
   import { PUBLIC_MAPTILER_API_KEY } from "$env/static/public";
+  import { currentLocation } from "$lib/currentLocation.js";
   import * as maplibregl from "maplibre-gl";
   import "maplibre-gl/dist/maplibre-gl.css";
+  import { onDestroy, onMount } from "svelte";
 
   const { data } = $props();
 
   let mapDiv;
-  $effect(() => {
-    const center = $page.url.searchParams.has("lat") &&
-      $page.url.searchParams.has("long") && [
-        +$page.url.searchParams.get("long"),
-        +$page.url.searchParams.get("lat"),
-      ];
+  let map;
+  onMount(() => {
+    let lng, lat;
+    const location = $page.url.searchParams.get("location");
+    if (location) {
+      [lng, lat] = location.split(",").map(Number);
+    }
 
-    const map = new maplibregl.Map({
+    map = new maplibregl.Map({
       container: mapDiv,
-      center: center || [11.4, 46.6],
-      zoom: center ? 12 : 7,
+      center: (location ? [lng, lat] : $currentLocation) || [11.4, 46.6],
+      zoom: location ? 17 : 7,
       style: `https://api.maptiler.com/maps/basic-v2/style.json?key=${PUBLIC_MAPTILER_API_KEY}`,
     });
 
@@ -60,10 +63,10 @@
         },
       });
     });
+  });
 
-    return () => {
-      map.remove();
-    };
+  onDestroy(() => {
+    map.remove();
   });
 </script>
 

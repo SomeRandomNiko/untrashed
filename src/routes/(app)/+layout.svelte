@@ -1,25 +1,51 @@
 <script>
+  import { navigating, page } from "$app/stores";
+  import { currentLocation } from "$lib/currentLocation";
   import "./../../app.css";
-  import { page } from "$app/stores";
-  import { navigating } from "$app/stores";
-  import { onMount } from "svelte";
 
   let { children } = $props();
   let lastSegment = $state("");
 
-  let latitude = $state(0);
-  let longitude = $state(0);
+  function locationCallback(position) {
+    currentLocation.set([position.coords.longitude, position.coords.latitude]);
+  }
+
+  function errorCallback(error) {
+    console.error("Error getting current location:", error);
+    currentLocation.set(undefined);
+  }
+
+  const POSITION_OPTIONS = {
+    enableHighAccuracy: true,
+  };
+
   $effect(() => {
     if ($navigating) {
       lastSegment = $page.url.pathname.substring($page.url.pathname.lastIndexOf("/") + 1) || "home";
     }
   });
-  onMount(() => {
-    lastSegment = $page.url.pathname.substring($page.url.pathname.lastIndexOf("/") + 1) || "home";
-    navigator.geolocation.getCurrentPosition((position) => {
-      latitude = position.coords.latitude;
-      longitude = position.coords.longitude;
-    });
+
+  $effect(() => {
+    navigator.geolocation.getCurrentPosition(locationCallback, errorCallback, POSITION_OPTIONS);
+
+    const watch = navigator.geolocation.watchPosition(
+      locationCallback,
+      errorCallback,
+      POSITION_OPTIONS,
+    );
+
+    return () => {
+      navigator.geolocation.clearWatch(watch);
+      currentLocation.set(undefined);
+    };
+  });
+
+  let searchParams = $derived.by(() => {
+    const searchParams = new URLSearchParams();
+    if ($currentLocation) {
+      searchParams.set("location", $currentLocation.join(","));
+    }
+    return searchParams;
   });
 </script>
 
@@ -33,7 +59,7 @@
   <div class="bottom-nav h-16 w-full flex-row items-center justify-between bg-secondary">
     <!-- Home Button -->
     <a
-      href="/home?lat={latitude}&long={longitude}"
+      href="/home?{searchParams.toString()}"
       class="nav-item {lastSegment === 'home' ? 'text-primary' : 'text-gray-500'}"
     >
       <div><i class="fa-solid fa-home"></i></div>
@@ -42,7 +68,7 @@
 
     <!-- Records Button -->
     <a
-      href="/records?lat={latitude}&long={longitude}"
+      href="/records?{searchParams.toString()}"
       class="nav-item {lastSegment === 'records30' ? 'text-primary' : 'text-gray-500'}"
     >
       <div><i class="fa-solid fa-trash"></i></div>

@@ -1,13 +1,12 @@
 <script>
-  import { onMount } from "svelte";
   import { Button } from "$lib/components/ui/button";
-  import { toast } from "svelte-sonner";
-  import { Toaster } from "$lib/components/ui/sonner/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import { currentLocation } from "$lib/currentLocation";
   import JSConfetti from "js-confetti";
+  import { onMount } from "svelte";
+  import { toast } from "svelte-sonner";
 
-  let latitude = 0;
-  let longitude = 0;
   let videoElement;
   let canvasElement;
   let photoData = "";
@@ -17,11 +16,6 @@
 
   onMount(() => {
     jsConfetti = new JSConfetti();
-    // Get user's location
-    navigator.geolocation.getCurrentPosition((position) => {
-      latitude = position.coords.latitude;
-      longitude = position.coords.longitude;
-    });
 
     // Access the user's camera
     navigator.mediaDevices
@@ -68,8 +62,8 @@
         },
         body: JSON.stringify({
           photoData,
-          latitude,
-          longitude,
+          latitude: $currentLocation[1],
+          longitude: $currentLocation[0],
         }),
       });
 

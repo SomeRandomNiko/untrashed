@@ -1,18 +1,16 @@
 import { db } from "$lib/server/db";
 import * as table from "$lib/server/db/schema";
-import { userLocation } from "$lib/server/userLocation.js";
 import { and, eq, getTableColumns, notInArray, sql } from "drizzle-orm";
 
 export async function load({ locals, url }) {
-  const lat = url.searchParams.get("lat");
-  const long = url.searchParams.get("long");
+  const location = url.searchParams.get("location");
+  const [lng, lat] = location.split(",").map(Number);
 
-  userLocation.set([lat, long]);
   const allTrashSpots = await db
     .select({
       ...getTableColumns(table.trashSpots),
       distance:
-        sql`ST_Distance(ST_MakePoint(11.555, 46.555)::geography, ${table.trashSpots.point}::geography)`.as(
+        sql`ST_Distance(ST_MakePoint(${lng}, ${lat})::geography, ${table.trashSpots.point}::geography)`.as(
           "distance",
         ),
     })
@@ -26,7 +24,7 @@ export async function load({ locals, url }) {
       ),
     )
     .orderBy(
-      sql`ST_Distance(ST_MakePoint(11.555, 46.555)::geography, ${table.trashSpots.point}::geography)`,
+      sql`ST_Distance(ST_MakePoint(${lng}, ${lat})::geography, ${table.trashSpots.point}::geography)`,
     )
     .limit(10);
 
@@ -34,7 +32,7 @@ export async function load({ locals, url }) {
     .select({
       ...getTableColumns(table.trashSpots),
       distance:
-        sql`ST_Distance(ST_MakePoint(11.555, 46.555)::geography, ${table.trashSpots.point}::geography)`.as(
+        sql`ST_Distance(ST_MakePoint(${lng}, ${lat})::geography, ${table.trashSpots.point}::geography)`.as(
           "distance",
         ),
     })
@@ -51,7 +49,7 @@ export async function load({ locals, url }) {
       ),
     )
     .orderBy(
-      sql`ST_Distance(ST_MakePoint(11.555, 46.555)::geography, ${table.trashSpots.point}::geography)`,
+      sql`ST_Distance(ST_MakePoint(${lng}, ${lat})::geography, ${table.trashSpots.point}::geography)`,
     )
     .limit(10);
 
