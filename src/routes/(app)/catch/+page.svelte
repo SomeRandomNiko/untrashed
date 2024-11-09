@@ -7,6 +7,8 @@
   import JSConfetti from "js-confetti";
   import { onMount } from "svelte";
   import { toast } from "svelte-sonner";
+  import { cubicOut } from "svelte/easing";
+  import { fade } from "svelte/transition";
 
   let videoElement;
   let canvasElement;
@@ -16,6 +18,10 @@
   let jsConfetti;
 
   let captureRecord = $state();
+  // New variables for score display
+  let displayScore = null;
+  let scoreTimeout;
+
   onMount(() => {
     if ($page.url.searchParams.has("record")) {
       captureRecord = +$page.url.searchParams.get("record");
@@ -74,34 +80,20 @@
           }),
         });
 
+        const result = await response.json();
         if (response.status === 200) {
           appState = "success";
           jsConfetti.addConfetti();
-          toast.success("Success", {
-            description: "Photo confirmed successfully",
-          });
-        } else {
-          appState = "error";
-          toast.error("Error", {
-            description: "There was an error confirming the photo",
-          });
-        }
-      } else {
-        const response = await fetch("/catch", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            photoData,
-            latitude,
-            longitude,
-          }),
-        });
 
-        if (response.status === 200) {
-          appState = "success";
-          jsConfetti.addConfetti();
+          // Display the score
+          displayScore = result.score;
+
+          // Set a timeout to hide the score after 1 second
+          clearTimeout(scoreTimeout);
+          scoreTimeout = setTimeout(() => {
+            displayScore = null;
+          }, 1000);
+
           toast.success("Success", {
             description: "Photo captured successfully",
           });
@@ -111,10 +103,35 @@
             description: "The photo does not contain any trash",
           });
         } else {
-          appState = "error";
-          toast.error("Error", {
-            description: "There was an error capturing the photo",
+          const response = await fetch("/catch", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              photoData,
+              latitude,
+              longitude,
+            }),
           });
+
+          if (response.status === 200) {
+            appState = "success";
+            jsConfetti.addConfetti();
+            toast.success("Success", {
+              description: "Photo captured successfully",
+            });
+          } else if (response.status === 400) {
+            appState = "error";
+            toast.warning("Error", {
+              description: "The photo does not contain any trash",
+            });
+          } else {
+            appState = "error";
+            toast.error("Error", {
+              description: "There was an error capturing the photo",
+            });
+          }
         }
       }
     } catch (error) {
@@ -153,7 +170,7 @@
   }
 </script>
 
-<div class="flex h-full flex-col items-center justify-center space-y-8 text-center">
+<div class="relative flex h-full flex-col items-center justify-center space-y-8 text-center">
   <!-- Game Instructions -->
   <div class="max-w-md">
     {#if captureRecord}
@@ -193,6 +210,13 @@
   </Dialog.Root>
 
   {#if appState !== "loading"}
+    <!-- Game Instructions -->
+    <div class="max-w-md">
+      <p class="text-lg text-gray-600">
+        Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
+        forget to verify them in the records page!)
+      </p>
+    </div>
     {#if !photoTaken}
       <div class="flex flex-col items-center space-y-4">
         <video
@@ -222,6 +246,18 @@
     </div>
   {/if}
 
+  <!-- Score Display -->
+  {#if displayScore !== null}
+    <div
+      class="absolute inset-0 flex items-center justify-center"
+      transition:fade={{ duration: 300, easing: cubicOut }}
+    >
+      <div class="text-9xl font-bold text-green-500">
+        +{displayScore}
+      </div>
+    </div>
+  {/if}
+
   <!-- Hidden canvas element -->
   <canvas bind:this={canvasElement} style="display: none;"></canvas>
 </div>
@@ -233,5 +269,10 @@
     height: auto;
     display: block;
     margin: auto;
+  }
+
+  /* Ensure the parent container is positioned relative for absolute positioning */
+  .relative {
+    position: relative;
   }
 </style>
