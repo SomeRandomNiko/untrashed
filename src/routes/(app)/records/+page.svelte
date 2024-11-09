@@ -6,7 +6,7 @@
 </script>
 
 <div class="flex flex-col items-center gap-8 pt-6">
-  <h1 class="text-2xl font-semibold tracking-tight">Records Page</h1>
+  <h1 class="text-2xl font-semibold tracking-tight">Reports</h1>
   <Tabs.Root value="all" class="w-5/6">
     <Tabs.List class="grid w-full grid-cols-2">
       <Tabs.Trigger value="all">All</Tabs.Trigger>

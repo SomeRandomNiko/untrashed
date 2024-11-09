@@ -74,7 +74,7 @@
       class="nav-item {lastSegment === 'records' ? 'text-primary' : 'text-gray-500'}"
     >
       <div><i class="fa-solid fa-trash"></i></div>
-      <span class="text-xs">Records</span>
+      <span class="text-xs">Reports</span>
     </a>
 
     <!-- Add Button (Centered and highlighted) -->
@@ -83,7 +83,7 @@
       class="nav-item {lastSegment === 'catch' ? 'text-primary' : 'text-gray-500'}"
     >
       <div><i class="fa-solid fa-circle-plus"></i></div>
-      <span class="text-xs">Catch</span>
+      <span class="text-xs">Capture</span>
     </a>
 
     <!-- Cars Button -->
