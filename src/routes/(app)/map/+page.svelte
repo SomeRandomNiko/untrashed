@@ -7,7 +7,6 @@
   import { onDestroy, onMount } from "svelte";
 
   const { data } = $props();
-
   let mapDiv;
   let map;
   onMount(() => {
@@ -61,6 +60,52 @@
           // Adjust the heatmap radius by zoom level
           "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 9, 20],
         },
+      });
+
+      map.addLayer({
+        id: "events",
+        type: "fill",
+        source: {
+          type: "geojson",
+          data: data.events,
+        },
+        paint: {
+          "fill-color": "#aaffaa",
+          "fill-opacity": 0.7,
+          "fill-antialias": true,
+        },
+      });
+      map.addLayer({
+        id: "events-outline",
+        type: "line",
+        source: {
+          type: "geojson",
+          data: data.events,
+        },
+        paint: {
+          "line-color": "#66ff66",
+          "line-width": 2,
+          "line-opacity": 0.5,
+        },
+      });
+      map.addLayer({
+        id: "events-text",
+        type: "symbol",
+        source: {
+          type: "geojson",
+          data: data.events,
+        },
+        paint: {
+          "text-color": "green",
+          "text-halo-color": "white",
+          "text-halo-width": 2,
+          "text-halo-blur": 2,
+        },
+        layout: {
+          "text-field": ["get", "name"],
+          "text-size": 15,
+        },
+        minzoom: 8,
       });
     });
   });
