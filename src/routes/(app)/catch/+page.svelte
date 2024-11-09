@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { Button } from "$lib/components/ui/button";
+  import { page } from "$app/stores";
   import { toast } from "svelte-sonner";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
@@ -10,12 +11,14 @@
   let longitude = 0;
   let videoElement;
   let canvasElement;
-  let photoData = "";
-  let photoTaken = false;
-  let state = "none";
+  let photoData = $state("");
+  let photoTaken = $state(false);
+  let appState = $state("none");
   let jsConfetti;
 
+  let captrureRecord = $state("");
   onMount(() => {
+    captrureRecord = $page.url.searchParams.get("record");
     jsConfetti = new JSConfetti();
     // Get user's location
     navigator.geolocation.getCurrentPosition((position) => {
@@ -59,46 +62,72 @@
    * Handle the "Catch" action
    */
   async function catchPhoto() {
-    state = "loading";
+    appState = "loading";
     try {
-      const response = await fetch("/catch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          photoData,
-          latitude,
-          longitude,
-        }),
-      });
+      if (captrureRecord) {
+        const response = await fetch("/catch/confirm", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            photoData,
+            captrureRecord,
+          }),
+        });
 
-      if (response.status === 200) {
-        state = "success";
-        jsConfetti.addConfetti();
-        toast.success("Success", {
-          description: "Photo captured successfully",
-        });
-      } else if (response.status === 400) {
-        state = "error";
-        toast.warning("Error", {
-          description: "The photo does not contain any trash",
-        });
+        if (response.status === 200) {
+          appState = "success";
+          jsConfetti.addConfetti();
+          toast.success("Success", {
+            description: "Photo confirmed successfully",
+          });
+        } else {
+          appState = "error";
+          toast.error("Error", {
+            description: "There was an error confirming the photo",
+          });
+        }
       } else {
-        state = "error";
-        toast.error("Error", {
-          description: "There was an error capturing the photo",
+        const response = await fetch("/catch", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            photoData,
+            latitude,
+            longitude,
+          }),
         });
+
+        if (response.status === 200) {
+          appState = "success";
+          jsConfetti.addConfetti();
+          toast.success("Success", {
+            description: "Photo captured successfully",
+          });
+        } else if (response.status === 400) {
+          appState = "error";
+          toast.warning("Error", {
+            description: "The photo does not contain any trash",
+          });
+        } else {
+          appState = "error";
+          toast.error("Error", {
+            description: "There was an error capturing the photo",
+          });
+        }
       }
     } catch (error) {
       console.error("Error during fetch:", error);
-      state = "error";
+      appState = "error";
       toast.error("Error", {
         description: "Failed to reach the server",
       });
     } finally {
       setTimeout(() => {
-        state = "none";
+        appState = "none";
         retake();
       }, 2000);
     }
@@ -129,6 +158,11 @@
 <div class="flex h-full flex-col items-center justify-center space-y-8 text-center">
   <!-- Game Instructions -->
   <div class="max-w-md">
+    {#if captrureRecord}
+      <h1 class="text-3xl font-bold">Confirm the Trash</h1>
+    {:else}
+      <h1 class="text-3xl font-bold">Catch the Trash</h1>
+    {/if}
     <p class="text-lg text-gray-600">
       Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
       forget to verify them in the records page!)
@@ -160,7 +194,7 @@
     </Dialog.Content>
   </Dialog.Root>
 
-  {#if state !== "loading"}
+  {#if appState !== "loading"}
     {#if !photoTaken}
       <div class="flex flex-col items-center space-y-4">
         <video
@@ -175,9 +209,10 @@
     {#if photoTaken}
       <div class="flex flex-col items-center space-y-4">
         <img src={photoData} alt="Captured Photo" class="w-full max-w-md rounded-lg shadow-lg" />
-        {#if state === "none"}
+        {#if appState === "none"}
           <div class="mt-4 flex flex-col items-center space-y-4">
-            <Button onclick={catchPhoto} class="w-20">Catch</Button>
+            <Button onclick={catchPhoto} class="w-20">{captrureRecord ? "Confirm" : "Catch"}</Button
+            >
             <Button onclick={retake} variant="outline" class="w-20">Retake</Button>
           </div>
         {/if}
