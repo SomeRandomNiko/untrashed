@@ -6,6 +6,8 @@
   import JSConfetti from "js-confetti";
   import { onMount } from "svelte";
   import { toast } from "svelte-sonner";
+  import { fade } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
 
   let videoElement;
   let canvasElement;
@@ -13,6 +15,10 @@
   let photoTaken = false;
   let state = "none";
   let jsConfetti;
+
+  // New variables for score display
+  let displayScore = null;
+  let scoreTimeout;
 
   onMount(() => {
     jsConfetti = new JSConfetti();
@@ -67,9 +73,20 @@
         }),
       });
 
+      const result = await response.json();
       if (response.status === 200) {
         state = "success";
         jsConfetti.addConfetti();
+
+        // Display the score
+        displayScore = result.score;
+
+        // Set a timeout to hide the score after 1 second
+        clearTimeout(scoreTimeout);
+        scoreTimeout = setTimeout(() => {
+          displayScore = null;
+        }, 1000);
+
         toast.success("Success", {
           description: "Photo captured successfully",
         });
@@ -120,14 +137,7 @@
   }
 </script>
 
-<div class="flex h-full flex-col items-center justify-center space-y-8 text-center">
-  <!-- Game Instructions -->
-  <div class="max-w-md">
-    <p class="text-lg text-gray-600">
-      Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
-      forget to verify them in the records page!)
-    </p>
-  </div>
+<div class="relative flex h-full flex-col items-center justify-center space-y-8 text-center">
   <Toaster position="top-center" richColors />
 
   <!-- Info dialog trigger positioned in the top-right corner -->
@@ -155,6 +165,13 @@
   </Dialog.Root>
 
   {#if state !== "loading"}
+    <!-- Game Instructions -->
+    <div class="max-w-md">
+      <p class="text-lg text-gray-600">
+        Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
+        forget to verify them in the records page!)
+      </p>
+    </div>
     {#if !photoTaken}
       <div class="flex flex-col items-center space-y-4">
         <video
@@ -184,6 +201,18 @@
     </div>
   {/if}
 
+  <!-- Score Display -->
+  {#if displayScore !== null}
+    <div
+      class="absolute inset-0 flex items-center justify-center"
+      transition:fade={{ duration: 300, easing: cubicOut }}
+    >
+      <div class="text-9xl font-bold text-green-500">
+        +{displayScore}
+      </div>
+    </div>
+  {/if}
+
   <!-- Hidden canvas element -->
   <canvas bind:this={canvasElement} style="display: none;"></canvas>
 </div>
@@ -195,5 +224,10 @@
     height: auto;
     display: block;
     margin: auto;
+  }
+
+  /* Ensure the parent container is positioned relative for absolute positioning */
+  .relative {
+    position: relative;
   }
 </style>
