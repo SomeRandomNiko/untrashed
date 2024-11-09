@@ -51,7 +51,7 @@
 
 <div class="flex h-dvh flex-col">
   <!-- Main content wrapper with padding to avoid overlap -->
-  <div class="flex-grow">
+  <div class="flex-grow overflow-y-auto overflow-x-hidden">
     {@render children()}
   </div>
 
