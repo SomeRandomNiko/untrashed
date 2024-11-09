@@ -17,6 +17,41 @@
   let appState = $state("none");
   let jsConfetti;
 
+  function handleWarning(message) {
+    appState = "error";
+    toast.warning("Error", {
+      description: message,
+    });
+
+    setTimeout(() => {
+      appState = "none";
+      retake();
+    }, 2000);
+  }
+
+  function handleError(message) {
+    appState = "error";
+    toast.error("Error", {
+      description: message,
+    });
+
+    setTimeout(() => {
+      appState = "none";
+      retake();
+    }, 2000);
+  }
+
+  function handleSuccess(message) {
+    toast.success("Success", {
+      description: message,
+    });
+
+    setTimeout(() => {
+      appState = "none";
+      window.location.href = "/records?" + searchParams.toString();
+    }, 2000);
+  }
+
   let captureRecord = $state();
   // New variables for score display
   let displayScore = $state(null);
@@ -102,14 +137,9 @@
             displayScore = null;
           }, 1000);
 
-          toast.success("Success", {
-            description: "Photo captured successfully",
-          });
+          handleSuccess("Photo captured successfully");
         } else if (response.status === 400) {
-          appState = "error";
-          toast.warning("Error", {
-            description: "The photo does not contain any trash",
-          });
+          handleWarning(result.error);
         }
       } else {
         const response = await fetch("/catch", {
@@ -138,35 +168,16 @@
             displayScore = null;
           }, 1000);
 
-          toast.success("Success", {
-            description: "Photo captured successfully",
-          });
+          handleSuccess("Photo captured successfully");
         } else if (response.status === 400) {
-          appState = "error";
-          toast.warning("Error", {
-            description: "The photo does not contain any trash",
-          });
+          handleWarning(result.error);
         } else {
-          appState = "error";
-          toast.error("Error", {
-            description: "There was an error capturing the photo",
-          });
+          handleError("There was an error capturing the photo");
         }
       }
-      setTimeout(() => {
-        appState = "none";
-        window.location.href = "/records?" + searchParams.toString();
-      }, 2000);
     } catch (error) {
       console.error("Error during fetch:", error);
-      appState = "error";
-      toast.error("Error", {
-        description: "Failed to reach the server",
-      });
-      setTimeout(() => {
-        appState = "none";
-        retake();
-      }, 2000);
+      handleError("Failed to reach the server");
     }
   }
 
@@ -192,7 +203,7 @@
   }
 </script>
 
-<div class="relative flex h-full flex-col items-center justify-center space-y-8 text-center">
+<div class="relative flex h-full flex-col items-center justify-center text-center">
   <!-- Game Instructions -->
   <div class="max-w-md">
     {#if captureRecord}
@@ -200,10 +211,6 @@
     {:else}
       <h1 class="text-3xl font-bold">Catch the Trash</h1>
     {/if}
-    <p class="text-lg text-gray-600">
-      Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
-      forget to verify them in the records page!)
-    </p>
   </div>
   <Toaster position="top-center" richColors />
 
@@ -215,7 +222,7 @@
     <Dialog.Content class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-lg">
       <Dialog.Header class="mb-4">
         <Dialog.Title class="mb-2 text-2xl font-bold">Rewards</Dialog.Title>
-        <Dialog.Description class="text-gray-700">
+        <Dialog.Description class="max-h-96 overflow-y-auto text-gray-700">
           <ul>
             <li>
               <strong>Category Weighting:</strong> Each trash category has a specific weight,
@@ -280,7 +287,7 @@
           </ul>
         </Dialog.Description>
       </Dialog.Header>
-      <Dialog.Footer class="mt-4 flex justify-end">
+      <Dialog.Footer class="flex justify-end">
         <Dialog.Close class="rounded bg-primary px-4 py-2 text-white">Close</Dialog.Close>
       </Dialog.Footer>
     </Dialog.Content>
@@ -289,7 +296,7 @@
   {#if appState !== "loading"}
     <!-- Game Instructions -->
     <div class="max-w-md">
-      <p class="text-lg text-gray-600">
+      <p class="text-md text-gray-600">
         Scan trash using your camera, confirm it, and earn rewards for each item you capture. (Don't
         forget to verify them in the records page!)
       </p>
@@ -346,10 +353,5 @@
     height: auto;
     display: block;
     margin: auto;
-  }
-
-  /* Ensure the parent container is positioned relative for absolute positioning */
-  .relative {
-    position: relative;
   }
 </style>
