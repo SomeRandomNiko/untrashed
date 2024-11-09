@@ -1,11 +1,11 @@
 <script>
-  import { onMount } from "svelte";
-  import { Button } from "$lib/components/ui/button";
   import { page } from "$app/stores";
-  import { toast } from "svelte-sonner";
-  import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import { Toaster } from "$lib/components/ui/sonner/index.js";
   import JSConfetti from "js-confetti";
+  import { onMount } from "svelte";
+  import { toast } from "svelte-sonner";
 
   let latitude = 0;
   let longitude = 0;
@@ -16,9 +16,11 @@
   let appState = $state("none");
   let jsConfetti;
 
-  let captrureRecord = $state("");
+  let captureRecord = $state();
   onMount(() => {
-    captrureRecord = $page.url.searchParams.get("record");
+    if (!$page.url.searchParams.has("record")) {
+      captureRecord = +$page.url.searchParams.get("record");
+    }
     jsConfetti = new JSConfetti();
     // Get user's location
     navigator.geolocation.getCurrentPosition((position) => {
@@ -64,7 +66,7 @@
   async function catchPhoto() {
     appState = "loading";
     try {
-      if (captrureRecord) {
+      if (captureRecord !== undefined) {
         const response = await fetch("/catch/confirm", {
           method: "POST",
           headers: {
@@ -72,7 +74,7 @@
           },
           body: JSON.stringify({
             photoData,
-            captrureRecord,
+            captureRecord,
           }),
         });
 
@@ -158,7 +160,7 @@
 <div class="flex h-full flex-col items-center justify-center space-y-8 text-center">
   <!-- Game Instructions -->
   <div class="max-w-md">
-    {#if captrureRecord}
+    {#if captureRecord}
       <h1 class="text-3xl font-bold">Confirm the Trash</h1>
     {:else}
       <h1 class="text-3xl font-bold">Catch the Trash</h1>
@@ -211,8 +213,7 @@
         <img src={photoData} alt="Captured Photo" class="w-full max-w-md rounded-lg shadow-lg" />
         {#if appState === "none"}
           <div class="mt-4 flex flex-col items-center space-y-4">
-            <Button onclick={catchPhoto} class="w-20">{captrureRecord ? "Confirm" : "Catch"}</Button
-            >
+            <Button onclick={catchPhoto} class="w-20">{captureRecord ? "Confirm" : "Catch"}</Button>
             <Button onclick={retake} variant="outline" class="w-20">Retake</Button>
           </div>
         {/if}
