@@ -22,6 +22,7 @@ Invite friends and compete in Trashure Hunts for extra rewards.
 
 ### More Features 🌟
 
-🏆 Leaderboard: Compete for the top spot.
-📊 User Stats: Track your impact with detailed stats.
+- 🏆 Leaderboard: Compete for the top spot.
+- 📊 User Stats: Track your impact with detailed stats.
+
 Let’s clean up, one tag at a time! 🧹🌱
