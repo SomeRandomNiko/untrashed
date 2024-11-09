@@ -15,13 +15,15 @@
       <Table.Root>
         <Table.Header>
           <Table.Row>
+            <Table.Head class="w-[90px]">Position</Table.Head>
             <Table.Head class="w-[100px]">Username</Table.Head>
             <Table.Head class="text-right">Score</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {#each data.scores as user}
+          {#each data.scores as user, idx}
             <Table.Row>
+              <Table.Cell class="font-medium">{idx + 1}</Table.Cell>
               <Table.Cell class="font-medium">{user.uname}</Table.Cell>
               <Table.Cell class="text-right">{user.score}</Table.Cell>
             </Table.Row>
