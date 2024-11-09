@@ -17,7 +17,7 @@
 
   let captureRecord = $state();
   onMount(() => {
-    if (!$page.url.searchParams.has("record")) {
+    if ($page.url.searchParams.has("record")) {
       captureRecord = +$page.url.searchParams.get("record");
     }
     jsConfetti = new JSConfetti();
