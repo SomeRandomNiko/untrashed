@@ -56,7 +56,9 @@
   </div>
 
   <!-- Bottom Navigation Bar -->
-  <div class="bottom-nav h-16 w-full flex-row items-center justify-between bg-secondary">
+  <div
+    class="bottom-nav h-16 w-full flex-shrink-0 flex-row items-center justify-between bg-secondary"
+  >
     <!-- Home Button -->
     <a
       href="/home?{searchParams.toString()}"

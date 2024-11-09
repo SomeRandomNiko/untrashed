@@ -2,7 +2,7 @@
   import { Button } from "$lib/components/ui/button/index.js";
 </script>
 
-<div class="flex h-full flex-col items-center justify-center space-y-8">
+<div class="flex h-full flex-col items-center justify-center gap-8">
   <Button href="" variant="secondary" class="w-5/6">Statistics</Button>
   <Button href="/logout" variant="destructive_light" class="w-5/6">Log Out</Button>
 </div>

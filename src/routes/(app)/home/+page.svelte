@@ -5,7 +5,7 @@
   let { data } = $props();
 </script>
 
-<div class="mt-6 flex flex-col items-center space-y-8">
+<div class="flex flex-col items-center gap-8 pt-6">
   <h1 class="text-2xl font-semibold tracking-tight">Hey, {data.user.name}!</h1>
   <h5 class="text-xl font-semibold tracking-tight">Your total points: {data.user.score}</h5>
   <Card.Root class="w-5/6">

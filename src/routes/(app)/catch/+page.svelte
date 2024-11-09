@@ -203,7 +203,7 @@
   }
 </script>
 
-<div class="relative flex h-full flex-col items-center justify-center text-center">
+<div class="relative flex h-full flex-col items-center justify-center pt-6 text-center">
   <!-- Game Instructions -->
   <div class="max-w-md">
     {#if captureRecord}
@@ -302,21 +302,21 @@
       </p>
     </div>
     {#if !photoTaken}
-      <div class="flex flex-col items-center space-y-4">
+      <div class="flex flex-col items-center gap-4">
         <video
           bind:this={videoElement}
           autoplay
           playsinline
-          class="w-full max-w-md rounded-lg shadow-lg"
+          class="max-h-[500px] w-full max-w-md rounded-lg shadow-lg"
         ></video>
         <Button onclick={takePhoto} class="h-24 w-24 rounded-full text-lg">Capture</Button>
       </div>
     {/if}
     {#if photoTaken}
-      <div class="flex flex-col items-center space-y-4">
+      <div class="flex flex-col items-center gap-4">
         <img src={photoData} alt="Captured Photo" class="w-full max-w-md rounded-lg shadow-lg" />
         {#if appState === "none"}
-          <div class="mt-4 flex flex-col items-center space-y-4">
+          <div class="flex flex-col items-center gap-4 pt-4">
             <Button onclick={catchPhoto} class="w-20">{captureRecord ? "Confirm" : "Catch"}</Button>
             <Button onclick={retake} variant="outline" class="w-20">Retake</Button>
           </div>
