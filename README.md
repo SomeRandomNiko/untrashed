@@ -1,9 +1,12 @@
 <h1 align="center">UnTrashed🌍♻️</h1>
+<h2 align="center"> Winner of NOI Hackathon SFSCON Edition (Konverto Challenge)</h2>
 <div align="center">
-    <img src="./static/UnTrashed.svg" height="200">
+    <a href="https://hackathon.bz.it/project/untrashed">
+        <img src="./static/UnTrashed.svg" height="200">
+    </a>
 </div>
 
-UnTrashed is a gamified app making cleanup fun! Users can spot, tag, and dispose of litter, earning points, achieving goals, and contributing to a cleaner world. 🌎✨
+[UnTrashed](https://hackathon.bz.it/project/untrashed) is a gamified app making cleanup fun! Users can spot, tag, and dispose of litter, earning points, achieving goals, and contributing to a cleaner world. 🌎✨
 
 ### Overview 🎯
 
